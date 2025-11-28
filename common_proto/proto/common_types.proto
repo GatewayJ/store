@@ -1,0 +1,50 @@
+syntax = "proto3";
+package common_proto;
+
+message DataNodeId {
+    uint32 id = 1;
+}
+
+message DataNodeInfo {
+    DataNodeId node_id = 1;
+    string rpc_addr = 2;
+    uint32 epoch = 3;
+}
+
+message VolumeId {
+    uint32 id = 1;
+}
+
+message ExtentId {
+    uint32 stream_id = 1;
+    uint64 log_seq = 2;
+}
+
+message ExtentVersion {
+    uint64 log_seq = 1;
+    uint32 epoch = 2;
+}
+
+message ExtentPlacement {
+    VolumeId volume_id = 1;
+    uint32 epoch = 2;
+}
+
+message ExtentStats {
+    ExtentVersion version = 1;
+    repeated ExtentPlacement places = 2;
+    repeated common_proto.DataNodeInfo nodes_info = 3;
+}
+
+message LogStreamId {
+    uint32 id = 1;
+}
+
+message LogStreamConfig {
+    uint64 extent_size = 1;
+    uint32 num_replicas = 2;
+}
+
+message ClientId {
+    uint64 id = 1;
+}

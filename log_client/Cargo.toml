@@ -1,0 +1,27 @@
+[package]
+name = "msc_log_client"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "msc-logclient"
+path = "src/bin/log_client.rs"
+
+[dependencies]
+common_proto = { path = "../common_proto" }
+msc_meta_node = { path = "../meta_node" }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+tokio = { workspace = true }
+tokio-stream = { workspace = true }
+futures = { workspace = true }
+tonic = { workspace = true }
+prost = { workspace = true }
+anyhow = { workspace = true }
+clap = { workspace = true }
+nix = { workspace = true }
+quick_cache = { workspace = true }
+
+[build-dependencies]
+tonic-build = { workspace = true }
+

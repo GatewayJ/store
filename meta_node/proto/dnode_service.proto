@@ -1,0 +1,33 @@
+syntax = "proto3";
+package dnode_service;
+
+import "google/protobuf/timestamp.proto";
+import "common_types.proto";
+
+message DataVolumeStats {
+	enum Flags {
+		__ZERO = 0;
+		UP = 1;
+	}
+
+	common_proto.VolumeId volume_id = 1;
+	string volume_uuid = 2;
+	uint32 flags = 3;
+	uint64 capacity = 4;
+	uint64 used_bytes = 5;
+	uint64 used_extents = 6;
+}
+
+message DataNodeBeacon {
+	common_proto.DataNodeId node_id = 1;
+	string node_uuid = 2;
+	string rpc_addr = 3;
+	repeated DataVolumeStats volumes = 4;
+}
+
+message DataNodeBeaconAck {
+}
+
+service DataNodeService {
+	rpc beacon(DataNodeBeacon) returns (DataNodeBeaconAck);
+}

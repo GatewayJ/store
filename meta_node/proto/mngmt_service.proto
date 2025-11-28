@@ -1,0 +1,60 @@
+syntax = "proto3";
+package mngmt_service;
+
+import "common_types.proto";
+
+message RaftNode {
+	uint64 id = 1;
+	string rpc_addr = 2;
+}
+
+message RaftMngmtRequest {
+	enum Op {
+		UNSPECIFIED = 0;
+		ADD_VOTERS = 1;
+		REMOVE_VOTERS = 2;
+		REPLACE_ALL_VOTERS = 3;
+		ADD_NODES = 4;
+		SET_NODES = 5;
+		REMOVE_NODES = 6;
+		REPLACE_ALL_NODES = 7;
+	}
+	enum Flags {
+		ZERO = 0;
+		RETAIN = 1;
+		BLOCKING = 2;
+	}
+
+	Op opcode = 1;
+	uint32 flags = 2;
+	repeated uint64 ids = 3;
+	repeated RaftNode nodes = 4;
+}
+
+message RaftMngmtResponse {
+	string data = 1;
+}
+
+message VolumeMngmtRequest {
+	message ReWeight {
+		float value = 1;
+	}
+	common_proto.VolumeId volume_id = 1;
+	string uuid = 2;
+	string host = 3;
+	uint64 capacity = 4;
+	ReWeight reweight = 5;
+}
+
+message VolumeMngmtResponse {
+	common_proto.VolumeId volume_id = 1;
+}
+
+service MngmtService {
+	rpc AddRaftLeaner(RaftMngmtRequest) returns (RaftMngmtResponse);
+	rpc ChangeRaftMembership(RaftMngmtRequest) returns (RaftMngmtResponse);
+	rpc GetRaftMetrics(RaftMngmtRequest) returns (RaftMngmtResponse);
+
+	rpc CreateDataNode(VolumeMngmtRequest) returns (VolumeMngmtResponse);
+	rpc CreateVolume(VolumeMngmtRequest) returns (VolumeMngmtResponse);
+}

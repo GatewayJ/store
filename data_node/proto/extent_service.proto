@@ -1,0 +1,91 @@
+syntax = "proto3";
+package extent_service;
+
+import "common_types.proto";
+
+message StatParams {
+}
+
+message StatResponse {
+    common_proto.ExtentVersion extent_version = 1;
+}
+
+message ReadParams {
+  enum Flags {
+    __ZERO = 0;
+    WANT_USER_HEADER = 1;
+    IGNORE_DATA_CSUM = 2;
+  }
+
+  uint32 flags = 1;
+  //u32 offset = 2;
+  //u32 size = 3;
+}
+
+message ReadResponse {
+    bytes user_header = 1;
+    bytes payload = 2;
+}
+
+message AppendParams {
+    bytes user_header = 1;
+    bytes payload = 2;
+}
+
+message AppendResponse {
+}
+
+message SealParams {
+}
+
+message SealResponse {
+    uint64 used_bytes = 1;
+}
+
+message CreateParams {
+    uint64 size = 1;
+}
+
+message CreateResponse {
+    uint64 avail_bytes = 1;
+}
+
+message DeleteParams {
+}
+
+message DeleteResponse {
+}
+
+message ExtentRequest {
+    uint64 request_seq = 1;
+    common_proto.VolumeId volume_id = 2;
+    common_proto.ExtentId extent_id = 3;
+    common_proto.ExtentVersion extent_version = 4;
+    oneof kind {
+        StatParams stat = 6;
+        ReadParams read = 7;
+        AppendParams append = 8;
+        SealParams seal = 9;
+        CreateParams create = 10;
+        DeleteParams delete = 11;
+    }
+}
+
+message ExtentResponse {
+    uint64 request_seq = 1;
+    common_proto.VolumeId volume_id = 2;
+    common_proto.ExtentId extent_id = 3;
+    oneof kind {
+        int32 errcode = 5;
+        StatResponse stat = 6; 
+        ReadResponse read = 7;
+        AppendResponse append = 8;
+        SealResponse seal = 9;
+        CreateResponse create = 10;
+        DeleteResponse delete = 11;
+    }
+}
+
+service ExtentService {
+	rpc ClientSession(stream ExtentRequest) returns (stream ExtentResponse);
+}

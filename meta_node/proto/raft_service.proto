@@ -1,0 +1,28 @@
+syntax = "proto3";
+package raft_service;
+
+message RaftRequest {
+	bytes data = 1;
+}
+
+message RaftResponse {
+	bytes data = 1;
+}
+
+message KeyValue {
+	bytes key = 1;
+	bytes value = 2;
+};
+
+message PushSnapshot {
+	bytes request = 1;
+	uint32 flags = 2;
+	string cf_name = 3;
+	repeated KeyValue key_vals = 4;
+}
+
+service RaftService {
+	rpc AppendEntries(RaftRequest) returns (RaftResponse);
+	rpc Vote(RaftRequest) returns (RaftResponse);
+	rpc FullSnapshot(stream PushSnapshot) returns (RaftResponse);
+}

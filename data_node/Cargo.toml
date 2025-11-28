@@ -1,0 +1,36 @@
+[package]
+name = "msc_data_node"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "msc-datanode"
+path = "src/bin/data_node.rs"
+
+[dependencies]
+common_proto = { path = "../common_proto" }
+msc_meta_node = { path = "../meta_node" }
+async-spdk = { path="../../async-spdk" }
+tokio = { workspace = true }
+tokio-stream = { workspace = true }
+tonic = { workspace = true }
+prost = { workspace = true }
+futures = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow = { workspace = true }
+rand = { workspace = true }
+bytes = { workspace = true }
+arc-swap = { workspace = true }
+uuid = { workspace = true }
+clap = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+nix = { workspace = true }
+crc32fast = "1.4.2"
+smallvec = "1.10"
+flume = "0.11"
+
+[build-dependencies]
+tonic-build = { workspace = true }
+

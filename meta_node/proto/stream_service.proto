@@ -1,0 +1,87 @@
+syntax = "proto3";
+package stream_service;
+
+import "common_types.proto";
+
+message ClientLease {
+	uint32 duration_ms = 1;
+}
+
+message SessionRequest {
+	uint64 request_seq = 1;
+	common_proto.ClientId client_id = 2;
+}
+
+message SessionResponse {
+	common_proto.ClientId client_id = 1;
+	ClientLease lease = 2;
+}
+
+message CreateRequest {
+	uint64 request_seq = 1;
+	common_proto.LogStreamConfig config = 2;
+}
+
+message CreateResponse {
+	common_proto.LogStreamId stream_id = 1;
+	common_proto.ExtentVersion extent_version = 2;
+}
+
+message SealExtentRequest {
+	common_proto.ExtentVersion extent_version = 1;
+	repeated common_proto.ExtentPlacement extent_places = 2;
+	uint64 used_bytes = 3;
+}
+
+message OpenRequest {
+	uint64 request_seq = 1;
+	common_proto.LogStreamId stream_id = 2;
+}
+
+message OpenResponse {
+	common_proto.ExtentVersion extent_version = 1;
+	common_proto.LogStreamConfig config = 2;
+}
+
+message CloseRequest {
+	uint64 request_seq = 1;
+	common_proto.LogStreamId stream_id = 2;
+	SealExtentRequest seal_request = 3;
+}
+
+message CloseResponse {
+	common_proto.ExtentVersion extent_version = 1;
+}
+
+message AllocExtentRequest {
+	uint64 request_seq = 1;
+	common_proto.ExtentId extent_id = 2;
+	SealExtentRequest seal_request = 3;
+}
+
+message AllocExtentResponse {
+	common_proto.ExtentVersion new_version = 1;
+	repeated common_proto.ExtentPlacement extent_places = 2;
+	repeated common_proto.ExtentPlacement prealloc_places = 3;
+	repeated common_proto.DataNodeInfo nodes_info = 4;
+}
+
+message StatExtentRequest {
+	common_proto.ExtentId extent_id = 1;
+}
+
+message StatExtentResponse {
+	common_proto.ExtentStats stats = 1;
+}
+
+service StreamService {
+	rpc open_session(SessionRequest) returns (SessionResponse);
+	rpc close_session(SessionRequest) returns (SessionResponse);
+	rpc renew_session(SessionRequest) returns (SessionResponse);
+	
+	rpc create_stream(CreateRequest) returns (CreateResponse);
+	rpc open_stream(OpenRequest) returns (OpenResponse);
+	rpc close_stream(CloseRequest) returns (CloseResponse);
+	rpc alloc_extent(AllocExtentRequest) returns (AllocExtentResponse);
+	rpc stat_extent(StatExtentRequest) returns (StatExtentResponse);
+}
